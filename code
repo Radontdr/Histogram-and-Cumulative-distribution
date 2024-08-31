@@ -1,0 +1,56 @@
+//code using matlab software 
+clc;
+clear all;
+close all;
+a = imread('cameraman.tif');
+imshow(a);
+title('Input Image');
+[m,n] =size(a);
+H=zeros(1,256);
+for k = 1:256
+    count = 0;
+    for i = 1:m
+        for j = 1:n
+            if(a(i,j)==k)
+                count=count+1;
+            end
+        end
+    end
+    H(1,k)=count;
+end
+figure;
+subplot(2,1,1);
+stem(H);
+xlabel('codes of gray shades');
+ylabel('frequency');
+title('Frequency distribution of input image');
+C=cumsum(H);
+subplot(2,1,2);
+stem(C);
+xlabel('codes of gray shades');
+ylabel('cumulative sum');
+title('Cumulative distribution of input image');
+d=C/(m*n);
+r=d*255; %normalize the cumulative distribution
+v=round(r);
+new=zeros(m,n);
+
+for k=1:256
+    for i=1:m
+        for j=1:n
+            if(a(i,j)==k)
+                new(i,j)=v(1, k);
+            end
+        end
+    end
+end
+figure;
+subplot(2,1,1);
+imshow(uint8(new));
+title('Reconstructed image');
+NH=imhist(uint8(new));
+subplot(2,1,2);
+stem(NH);
+xlabel('codes of gray shades');
+ylabel('frequency');
+title('Histogram of new image');
